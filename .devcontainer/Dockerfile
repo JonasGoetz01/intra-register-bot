@@ -39,7 +39,7 @@ RUN LATEST_CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/L
     unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
 
 # Install Python dependencies
-RUN pip install --no-cache-dir selenium python-dotenv
+RUN pip install --no-cache-dir selenium python-dotenv requests
 
 # Set environment variables
 ENV DISPLAY=:99

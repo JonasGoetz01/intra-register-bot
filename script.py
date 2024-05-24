@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import time
+import requests
 
 load_dotenv()
 
@@ -43,6 +44,11 @@ availability = driver.find_element(By.CLASS_NAME, "user-poste-status")
 print(availability.text)
 host = driver.find_element(By.CLASS_NAME, "user-poste-infos")
 print(host.text)
+
+message = f"You are {availability.text} at {host.text} 😀"
+response = requests.post("https://ntfy.coregame.de/intrabot", data=message.encode('utf-8'))
+
+
 
 # Close the browser
 driver.quit()
