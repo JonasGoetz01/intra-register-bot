@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import NoSuchElementException
 import time
 import requests
 
@@ -18,37 +19,34 @@ chrome_options.add_argument('--remote-debugging-port=9222')
 chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--window-size=1920x1080')
 
-# Set the path to the ChromeDriver
 service = Service('/usr/local/bin/chromedriver')
 
-# Initialize the WebDriver
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
-# Open a website
 driver.get("https://intra.42.fr")
 
 usernameField = driver.find_element(By.ID, "username")
 passwordField = driver.find_element(By.ID, "password")
 
-# Find an element by its name attribute and type something
 usernameField.send_keys(os.getenv("USERNAME"))
 passwordField.send_keys(os.getenv("PASSWORD"))
 login_button = driver.find_element(By.ID, "kc-login")
 login_button.click()
 
-# Wait for some time to let the search results load
-# time.sleep(5)
-
-# Find a specific element by its tag name and print its text
 availability = driver.find_element(By.CLASS_NAME, "user-poste-status")
 print(availability.text)
 host = driver.find_element(By.CLASS_NAME, "user-poste-infos")
 print(host.text)
 
-message = f"You are {availability.text} at {host.text} 😀"
-response = requests.post("https://ntfy.coregame.de/intrabot", data=message.encode('utf-8'))
+try:
+    evals = driver.find_element(By.CLASS_NAME, "project-item-text")
+    element_exists = True
+except NoSuchElementException:
+    element_exists = False
 
-
+if element_exists:
+    message = f"{evals.text} 😀"
+    response = requests.post("https://ntfy.coregame.de/intrabot", data=message.encode('utf-8'))
 
 # Close the browser
 driver.quit()
