@@ -4,14 +4,35 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 import requests
 
-# Configure Chrome options
-chrome_options = Options()
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--disable-dev-shm-usage')
-chrome_options.add_argument('--remote-debugging-port=9222')
-chrome_options.add_argument('--disable-gpu')
-chrome_options.add_argument('--window-size=1920x1080')
+
+class Event:
+	def __init__(self, name, status):
+		self.name = name
+		self.status = status
+	def isExam(self):
+		return self.status == "Exam"
+
+
+def registerToEvent(driver):
+	wait = WebDriverWait(driver, 10)
+	events = driver.find_elements(By.CLASS_NAME, "event-button")
+	for event in events:
+		event.click()
+		event_name_element = wait.until(EC.presence_of_element_located((By.XPATH, ".//div[contains(@class, 'kind') and text()='Event']/../h4")))
+		event_name = event_name_element.text
+		print(event_name)
+		# if not event.isExam():
+		# 	continue
+		# event.find_element(By.CLASS_NAME, "btn-primary").click()
+		# time.sleep(0.5)
+		
+	
+
+# availability = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "login")))
+
+# print(availability.text)

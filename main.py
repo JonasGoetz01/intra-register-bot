@@ -1,4 +1,6 @@
 from login import login
+from events import Event
+from events import registerToEvent
 import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -12,8 +14,7 @@ import requests
 driver = login()
 wait = WebDriverWait(driver, 10)
 print(driver.current_url)
+registerToEvent(driver)
 # time.sleep(5)
-availability = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "login")))
 
-print(availability.text)
 
